@@ -1,8 +1,8 @@
 
-import PomodoroTimer from '@/components/PomodoroTimer';
+import Timer from '@/components/PomodoroTimer';
 
 const Index = () => {
-  return <PomodoroTimer />;
+  return <Timer />;
 };
 
 export default Index;

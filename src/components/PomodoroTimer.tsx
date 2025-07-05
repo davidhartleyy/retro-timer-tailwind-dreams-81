@@ -73,7 +73,7 @@ const Timer: React.FC<TimerProps> = () => {
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
-            <div className="text-amber-400 text-sm font-medium mb-4">
+            <div style={{ color: '#FAFAFA' }} className="text-sm font-medium mb-4">
               {Math.round(progressPercentage)}% Complete
             </div>
           </div>
@@ -93,7 +93,7 @@ const Timer: React.FC<TimerProps> = () => {
                 {/* Bottom shadow for 3D effect */}
                 <div className="h-2 bg-gradient-to-b from-gray-800 to-gray-900"></div>
               </div>
-              <div className="text-amber-400 text-sm font-medium mt-3 text-center">MINUTES</div>
+              <div style={{ color: '#FAFAFA' }} className="text-sm font-medium mt-3 text-center">MINUTES</div>
             </div>
 
             {/* Colon separator */}
@@ -112,30 +112,29 @@ const Timer: React.FC<TimerProps> = () => {
                 {/* Bottom shadow for 3D effect */}
                 <div className="h-2 bg-gradient-to-b from-gray-800 to-gray-900"></div>
               </div>
-              <div className="text-amber-400 text-sm font-medium mt-3 text-center">SECONDS</div>
+              <div style={{ color: '#FAFAFA' }} className="text-sm font-medium mt-3 text-center">SECONDS</div>
             </div>
           </div>
 
-          {/* Timer Label */}
-          <div className="mb-12">
-            <div className="text-white text-2xl font-semibold mb-2">
-              30-Minute Focus Timer
+          {timeLeft === 0 && (
+            <div className="mb-12">
+              <div className="text-gray-400 text-sm">
+                Time's up! Well done.
+              </div>
             </div>
-            <div className="text-gray-400 text-sm">
-              {timeLeft === 0 ? 'Time\'s up! Well done.' : 'Stay focused and productive'}
-            </div>
-          </div>
+          )}
 
           {/* Controls */}
           <div className="flex items-center justify-center gap-6">
             <Button
               onClick={toggleTimer}
-              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-none shadow-xl rounded-full px-10 py-4 text-lg font-semibold transition-all duration-200 transform hover:scale-105"
+              style={{ backgroundColor: '#FAFAFA', color: 'black' }}
+              className="border-none shadow-xl rounded-full px-10 py-4 text-lg font-semibold transition-all duration-200 transform hover:scale-105 hover:opacity-90"
             >
               {isActive ? (
-                <Pause className="w-6 h-6 mr-3" />
+                <Pause className="w-6 h-6 mr-3" style={{ color: 'black' }} />
               ) : (
-                <Play className="w-6 h-6 mr-3" />
+                <Play className="w-6 h-6 mr-3" style={{ color: 'black' }} />
               )}
               {isActive ? 'Pause' : 'Start'}
             </Button>

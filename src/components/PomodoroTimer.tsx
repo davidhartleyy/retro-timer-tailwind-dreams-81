@@ -4,39 +4,9 @@ import { Button } from '@/components/ui/button';
 
 interface TimerProps {}
 
-const FlipDigit: React.FC<{ value: string; isFlipping: boolean }> = ({ value, isFlipping }) => {
-  return (
-    <div className="relative w-full h-full perspective-1000">
-      <div className={`flip-card ${isFlipping ? 'flip' : ''}`}>
-        <div className="flip-card-inner">
-          <div className="flip-card-front">
-            <div className="text-white text-7xl font-mono font-bold leading-none text-center">
-              {value}
-            </div>
-          </div>
-          <div className="flip-card-back">
-            <div className="text-white text-7xl font-mono font-bold leading-none text-center">
-              {value}
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Horizontal divider line */}
-      <div className="absolute inset-x-0 top-1/2 h-0.5 bg-gray-700 z-10"></div>
-    </div>
-  );
-};
-
 const Timer: React.FC<TimerProps> = () => {
   const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
   const [isActive, setIsActive] = useState(false);
-  const [prevTime, setPrevTime] = useState(30 * 60);
-  const [flippingStates, setFlippingStates] = useState({
-    minsTens: false,
-    minsOnes: false,
-    secsTens: false,
-    secsOnes: false
-  });
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -45,7 +15,6 @@ const Timer: React.FC<TimerProps> = () => {
   useEffect(() => {
     if (isActive && timeLeft > 0) {
       intervalRef.current = setInterval(() => {
-        setPrevTime(timeLeft);
         setTimeLeft((time) => time - 1);
       }, 1000);
     } else if (timeLeft === 0) {
@@ -73,7 +42,6 @@ const Timer: React.FC<TimerProps> = () => {
 
   const resetTimer = () => {
     setIsActive(false);
-    setPrevTime(initialTime);
     setTimeLeft(initialTime);
   };
 
@@ -84,62 +52,7 @@ const Timer: React.FC<TimerProps> = () => {
   };
 
   const { mins, secs } = formatTime(timeLeft);
-  const { mins: prevMins, secs: prevSecs } = formatTime(prevTime);
   const progressPercentage = ((initialTime - timeLeft) / initialTime) * 100;
-
-  // Handle flip animations when digits change
-  useEffect(() => {
-    const currentMinsTens = Math.floor(mins / 10);
-    const currentMinsOnes = mins % 10;
-    const currentSecsTens = Math.floor(secs / 10);
-    const currentSecsOnes = secs % 10;
-    
-    const prevMinsTens = Math.floor(prevMins / 10);
-    const prevMinsOnes = prevMins % 10;
-    const prevSecsTens = Math.floor(prevSecs / 10);
-    const prevSecsOnes = prevSecs % 10;
-
-    // Check for digit changes and trigger flips
-    let shouldUpdate = false;
-    const newFlippingStates = {
-      minsTens: false,
-      minsOnes: false,
-      secsTens: false,
-      secsOnes: false
-    };
-    
-    if (currentMinsTens !== prevMinsTens) {
-      newFlippingStates.minsTens = true;
-      shouldUpdate = true;
-    }
-    if (currentMinsOnes !== prevMinsOnes) {
-      newFlippingStates.minsOnes = true;
-      shouldUpdate = true;
-    }
-    if (currentSecsTens !== prevSecsTens) {
-      newFlippingStates.secsTens = true;
-      shouldUpdate = true;
-    }
-    if (currentSecsOnes !== prevSecsOnes) {
-      newFlippingStates.secsOnes = true;
-      shouldUpdate = true;
-    }
-
-    // Update flipping states if any changed
-    if (shouldUpdate) {
-      setFlippingStates(newFlippingStates);
-      
-      // Reset flip states after animation duration (600ms)
-      setTimeout(() => {
-        setFlippingStates({
-          minsTens: false,
-          minsOnes: false,
-          secsTens: false,
-          secsOnes: false
-        });
-      }, 600);
-    }
-  }, [mins, secs, prevMins, prevSecs]);
 
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: '#1a1a1a' }}>
@@ -170,20 +83,11 @@ const Timer: React.FC<TimerProps> = () => {
             {/* Minutes */}
             <div className="relative">
               <div className="bg-black border-4 border-gray-800 rounded-lg shadow-2xl overflow-hidden">
-                <div className="bg-gradient-to-b from-gray-900 to-black p-8 min-w-[160px] h-40 flex">
-                  {/* Minutes tens digit */}
-                  <div className="flex-1 relative">
-                    <FlipDigit 
-                      value={Math.floor(mins / 10).toString()} 
-                      isFlipping={flippingStates.minsTens} 
-                    />
-                  </div>
-                  {/* Minutes ones digit */}
-                  <div className="flex-1 relative">
-                    <FlipDigit 
-                      value={(mins % 10).toString()} 
-                      isFlipping={flippingStates.minsOnes} 
-                    />
+                <div className="bg-gradient-to-b from-gray-900 to-black p-8 min-w-[160px]">
+                  <div className="text-white text-9xl font-mono font-bold leading-none text-center relative">
+                    {mins.toString().padStart(2, '0')}
+                    {/* Flip clock horizontal line effect */}
+                    <div className="absolute inset-x-0 top-1/2 h-0.5 bg-gray-700"></div>
                   </div>
                 </div>
                 {/* Bottom shadow for 3D effect */}
@@ -198,20 +102,11 @@ const Timer: React.FC<TimerProps> = () => {
             {/* Seconds */}
             <div className="relative">
               <div className="bg-black border-4 border-gray-800 rounded-lg shadow-2xl overflow-hidden">
-                <div className="bg-gradient-to-b from-gray-900 to-black p-8 min-w-[160px] h-40 flex">
-                  {/* Seconds tens digit */}
-                  <div className="flex-1 relative">
-                    <FlipDigit 
-                      value={Math.floor(secs / 10).toString()} 
-                      isFlipping={flippingStates.secsTens} 
-                    />
-                  </div>
-                  {/* Seconds ones digit */}
-                  <div className="flex-1 relative">
-                    <FlipDigit 
-                      value={(secs % 10).toString()} 
-                      isFlipping={flippingStates.secsOnes} 
-                    />
+                <div className="bg-gradient-to-b from-gray-900 to-black p-8 min-w-[160px]">
+                  <div className="text-white text-9xl font-mono font-bold leading-none text-center relative">
+                    {secs.toString().padStart(2, '0')}
+                    {/* Flip clock horizontal line effect */}
+                    <div className="absolute inset-x-0 top-1/2 h-0.5 bg-gray-700"></div>
                   </div>
                 </div>
                 {/* Bottom shadow for 3D effect */}
